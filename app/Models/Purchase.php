@@ -20,4 +20,12 @@ class Purchase extends Model
         'amount',
         'is_paid',
     ];
+
+    /* Relación muchos a muchos*/
+
+    public function product(){
+        return $this->belongsToMany('App\Models\Product','product_purchase')
+            ->withPivot('product_id')
+            ->withTimestamps();
+    }
 }
