@@ -66,4 +66,18 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function client() {
+        return $this->hasOne('App\Models\Client');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function employee() {
+        return $this->hasOne('App\Models\Employee');
+    }
 }
