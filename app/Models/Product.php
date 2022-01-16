@@ -19,6 +19,9 @@ class Product extends Model
         'name',
         'description',
         'price',
+        'image_name',
+        'original_image',
+        'reduced_image',
     ];
 
     /* Relación muchos a muchos*/
