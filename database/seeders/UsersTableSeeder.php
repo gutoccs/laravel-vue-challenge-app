@@ -13,8 +13,8 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        $userRole = config('roles.models.role')::where('name', '=', 'User')->first();
-        $adminRole = config('roles.models.role')::where('name', '=', 'Admin')->first();
+        $clientRole = config('roles.models.role')::where('name', '=', 'Client')->first();
+        $employeeRole = config('roles.models.role')::where('name', '=', 'Employee')->first();
         $permissions = config('roles.models.permission')::all();
 
         /*
@@ -23,12 +23,27 @@ class UsersTableSeeder extends Seeder
          */
         if (config('roles.models.defaultUser')::where('email', '=', 'admin@admin.com')->first() === null) {
             $newUser = config('roles.models.defaultUser')::create([
-                'name'     => 'Admin',
-                'email'    => 'admin@admin.com',
+                'name'     => 'Gustavo',
+                'surname'  => 'Escobar',
+                'email'    => 'gustavo.escobar@employee.com',
                 'password' => bcrypt('password'),
             ]);
 
-            $newUser->attachRole($adminRole);
+            $newUser->attachRole($employeeRole);
+            foreach ($permissions as $permission) {
+                $newUser->attachPermission($permission);
+            }
+        }
+
+        if (config('roles.models.defaultUser')::where('email', '=', 'admin@admin.com')->first() === null) {
+            $newUser = config('roles.models.defaultUser')::create([
+                'name'     => 'Florimar',
+                'surname'  => 'Tolosa',
+                'email'    => 'florimar.tolosa@employee.com',
+                'password' => bcrypt('password'),
+            ]);
+
+            $newUser->attachRole($employeeRole);
             foreach ($permissions as $permission) {
                 $newUser->attachPermission($permission);
             }
@@ -36,12 +51,13 @@ class UsersTableSeeder extends Seeder
 
         if (config('roles.models.defaultUser')::where('email', '=', 'user@user.com')->first() === null) {
             $newUser = config('roles.models.defaultUser')::create([
-                'name'     => 'User',
-                'email'    => 'user@user.com',
+                'name'     => 'Pedro',
+                'surname'  => 'Parque',
+                'email'    => 'pedro.parque@user.com',
                 'password' => bcrypt('password'),
             ]);
 
-            $newUser->attachRole($userRole);
+            $newUser->attachRole($clientRole);
         }
     }
 }
