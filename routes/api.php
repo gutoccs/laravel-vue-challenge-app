@@ -39,7 +39,7 @@ Route::group([
 
     Route::group(['middleware' => ['auth:api', 'checkTypeOfUser:employee']], function () {
         Route::post('/', [ProductController::class, 'store']);
-
+        Route::post('/import', [ProductController::class, 'importFromExcel']);
     });
 
 });

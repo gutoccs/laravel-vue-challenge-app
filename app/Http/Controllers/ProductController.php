@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Imports\ProductsImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -162,5 +163,31 @@ class ProductController extends Controller
         //
     }
 
+    public function importFromExcel(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'products'         =>  'required|file|max:12288|mimes:xls,xlsx'
+        ],
+        [
+            'products.required'        =>  'El Archivo es requerido',
+            'products.file'            =>  'El Archivo debe ser un tipo de archivo',
+            'products.max'             =>  'El Archivo debe tener un peso máximo de 12MB',
+            'products.mimes'           =>  'El Archivo debe ser xls o xlsx'
+        ]);
+
+        if($validator->fails())
+            return response()->json(['errors' => $validator->errors()], 400);
+
+        try {
+            (new ProductsImport)->import(request()->file('products'));
+        }
+        catch (\Exception $e) {
+            return response()->json(['status' => 'Fail', 'error' => 'Revise el archivo'], 400);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'Fail', 'error' => 'Revise el archivo'], 400);
+        }
+
+        return response()->json(['status' => 'OK'], 200);
+    }
 
 }

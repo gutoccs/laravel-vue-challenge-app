@@ -24,6 +24,9 @@ class Product extends Model
         'reduced_image',
     ];
 
+    // Para permitir almacenar los datos de forma masiva
+    protected $guarded = [];
+
     /* Relación muchos a muchos*/
 
     public function purchase(){
