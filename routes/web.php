@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\WelcomeController;
 
 /*
@@ -16,5 +16,7 @@ use App\Http\Controllers\WelcomeController;
 */
 
 //Route::get('/{any}', 'App\Http\Controllers\WelcomeController')->where('any', '.*');
+
+Route::get('/product/{idProduct}', [ProductController::class, 'showView'])->where('idProduct', '\d+');
 
 Route::get('/{any}', WelcomeController::class)->where('any', '.*');

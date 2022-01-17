@@ -41,6 +41,7 @@ Route::group([
         Route::post('/', [ProductController::class, 'store']);
         Route::post('/import', [ProductController::class, 'importFromExcel']);
         Route::get('/export', [ProductController::class, 'exportToExcel']);
+        Route::get('/pdf/{idProduct}', [ProductController::class, 'generatePDF'])->where('idProduct', '\d+');
     });
 
 });

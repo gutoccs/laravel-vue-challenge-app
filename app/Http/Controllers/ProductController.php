@@ -132,6 +132,26 @@ class ProductController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Product  $product
+     * @return \Illuminate\Http\Response
+     */
+    public function showView($idProduct)
+    {
+        $product = Product::find($idProduct);
+
+        if($product)
+            return view('product_description', [
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'image' => ($product->reduced_image != null) ? env('APP_URL') . $product->reduced_image : '',
+            ]);
+
+        return;
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Product  $product
@@ -207,6 +227,24 @@ class ProductController extends Controller
         event(new ExportProductsEvent(Auth::user()->employee));
 
         return $file->download('products.xlsx');
+    }
+
+    public function generatePDF($idProduct) {
+
+        $product = Product::find($idProduct);
+
+        if(!$product)
+            return response()->json(['status' => 'fail'], 400);
+
+        $data = [
+            'name' => $product->name,
+            'price' => $product->price,
+            'image' => ($product->reduced_image != null) ? env('APP_URL') . $product->reduced_image : '',
+        ];
+
+        $pdf = \PDF::loadView('product_description', $data);
+
+        return $pdf->download("{$product->name}.pdf");
     }
 
 }
