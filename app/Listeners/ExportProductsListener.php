@@ -5,6 +5,8 @@ namespace App\Listeners;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ExportProductsMail;
 
 class ExportProductsListener
 {
@@ -26,6 +28,13 @@ class ExportProductsListener
      */
     public function handle($event)
     {
-        Log::info('Alguien descargó el archivo: ' . $event->employee->user->name);
+        try {
+            Mail::to('administrador@admin.com')->send(new ExportProductsMail($event->employee));
+        } catch(Exception $e) {
+            Log::error("Error - handle ExportProductsListener -> $e");
+        }
+        catch (\Throwable $e) {
+            Log::error("Error - handle ExportProductsListener -> $e");
+        }
     }
 }
