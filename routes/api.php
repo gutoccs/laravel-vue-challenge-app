@@ -37,11 +37,15 @@ Route::group([
     'prefix'     => 'product',
 ], function() {
 
+    Route::get('/', [ProductController::class, 'index']);
+    Route::get('/{idProduct}', [ProductController::class, 'show'])->where('idProduct', '\d+');
+
     Route::group(['middleware' => ['auth:api', 'checkTypeOfUser:employee']], function () {
         Route::post('/', [ProductController::class, 'store']);
         Route::post('/import', [ProductController::class, 'importFromExcel']);
         Route::get('/export', [ProductController::class, 'exportToExcel']);
         Route::get('/pdf/{idProduct}', [ProductController::class, 'generatePDF'])->where('idProduct', '\d+');
+        Route::delete('/{idProduct}', [ProductController::class, 'destroy'])->where('idProduct', '\d+');
     });
 
 });

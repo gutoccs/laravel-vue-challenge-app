@@ -24,9 +24,26 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $products = Product::select('id', 'name', 'description', 'price', 'reduced_image', 'created_at');
+
+        //Auth::user()->hasRole('employee)
+        if(isset(Auth::user()->employee)) {
+            if($request->exists('min_price'))
+                $products = $products->where('price', '>=', $request->min_price);
+
+            if($request->exists('max_price'))
+                $products = $products->where('price', '<=', $request->max_price);
+        }
+
+        $products = $products->get();
+
+        return response()->json([
+            'status'    =>  'OK',
+            'products'  =>  $products
+        ], 200);
+
     }
 
     /**
@@ -126,9 +143,16 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show($productId)
     {
-        //
+        $product = Product::select('id', 'name', 'description', 'price', 'reduced_image', 'created_at')
+                            ->where('id', $productId)
+                            ->first();
+
+        return response()->json([
+            'status'    =>  'OK',
+            'product'  =>  $product
+        ], 200);
     }
 
     /**
@@ -180,9 +204,20 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy($productId)
     {
-        //
+        $product = Product::find($productId);
+
+        if(!$product)
+            return response()->json(['status'    =>  'fail', 'error'    =>  'Producto no existe'], 400);
+
+
+        if($product->delete())
+            return response()->json(['status'    =>  'OK'], 200);
+
+
+        return response()->json(['status'    =>  'fail', 'error'    =>  'No se pudo borrar al producto'], 400);
+
     }
 
     public function importFromExcel(Request $request)
