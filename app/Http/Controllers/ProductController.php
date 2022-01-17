@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Imports\ProductsImport;
+use App\Exports\ProductsExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use \Gumlet\ImageResize;
-
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
@@ -188,6 +189,19 @@ class ProductController extends Controller
         }
 
         return response()->json(['status' => 'OK'], 200);
+    }
+
+    public function exportToExcel()
+    {
+        // Si se coloca un request, pudiera crearse algunos filtros
+
+        // Si en Product Export  se usa el trait exportable se pudiera guardar en disco también
+
+        $products = Product::select('id', 'name', 'description', 'price', 'image_name', 'created_at')
+                    ->get();
+
+        return (new ProductsExport($products))->download('products.xlsx');
+
     }
 
 }
