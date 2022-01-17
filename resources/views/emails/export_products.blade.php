@@ -1,4 +1,4 @@
-@extends('emails.layouts.app')
+@extends('layouts.app')
 
 
 @section('template_title')
