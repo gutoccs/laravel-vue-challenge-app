@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,3 +33,13 @@ Route::prefix('auth')->group(function () {
 });
 
 
+Route::group([
+    'prefix'     => 'product',
+], function() {
+
+    Route::group(['middleware' => ['auth:api', 'checkTypeOfUser:employee']], function () {
+        Route::post('/', [ProductController::class, 'store']);
+
+    });
+
+});
