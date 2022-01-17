@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Imports\ProductsImport;
 use App\Exports\ProductsExport;
+use App\Events\ExportProductsEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -200,8 +201,12 @@ class ProductController extends Controller
         $products = Product::select('id', 'name', 'description', 'price', 'image_name', 'created_at')
                     ->get();
 
-        return (new ProductsExport($products))->download('products.xlsx');
+        $file = new ProductsExport($products);
 
+        // Paso el empleado que lo descarga, con el fin de pasar algo
+        event(new ExportProductsEvent(Auth::user()->employee));
+
+        return $file->download('products.xlsx');
     }
 
 }
